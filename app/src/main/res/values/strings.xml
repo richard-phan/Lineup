@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">TeamRandomizer</string>
+    <string name="team_size">Team Size:</string>
+    <string name="add_player">Add Player</string>
+    <string name="inclusive">Inclusive</string>
+    <string name="exclusive">exclusive</string>
+    <string name="delete">delete</string>
+    <string name="clear">clear</string>
+    <string name="tabPlayer">Players</string>
+    <string name="tabTeam">Teams</string>
+</resources>
