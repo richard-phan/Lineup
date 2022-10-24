@@ -25,8 +25,8 @@ public class TeamAdapter extends FragmentStateAdapter {
         Bundle args = new Bundle();
 
         if (!teamRandomizer.getTeams().isEmpty()) {
-            ArrayList<String> team = (ArrayList<String>) teamRandomizer.getTeams().get(position);
-            args.putStringArrayList(TeamListFragment.TEAM_OBJECT, team);
+            ArrayList<Player> team = teamRandomizer.getTeams().get(position);
+            args.putSerializable(TeamListFragment.TEAM_OBJECT, team);
             fragment.setArguments(args);
         }
 

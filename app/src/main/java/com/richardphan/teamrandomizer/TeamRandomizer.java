@@ -2,14 +2,14 @@ package com.richardphan.teamrandomizer;
 
 import android.util.Log;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class TeamRandomizer {
     private int numPlayers;
-    private ArrayList<String> players;
-    private List<List<String>> teams;
+    private ArrayList<Player> players;
+    private ArrayList<ArrayList<Player>> teams;
 
     public TeamRandomizer() {
         this.numPlayers = 0;
@@ -17,23 +17,27 @@ public class TeamRandomizer {
         this.teams = new ArrayList<>();
     }
 
-    public TeamRandomizer(ArrayList<String> players) {
+    public TeamRandomizer(ArrayList<Player> players) {
         this.numPlayers = players.size();
         this.players = players;
         this.teams = new ArrayList<>();
     }
 
-    public void randomize() {
-        Collections.shuffle(players);
+    public ArrayList<Player> randomizePlayers() {
+        ArrayList<Player> ap = getActivePlayers();
+        Collections.shuffle(ap);
+
+        return ap;
     }
 
     public void splitPlayersExclusive(int teamSize) {
-        List<List<String>> teams = new ArrayList<>();
-        int numTeams = numPlayers / teamSize;
+        ArrayList<ArrayList<Player>> teams = new ArrayList<>();
+        ArrayList<Player> ap = randomizePlayers();
+        int numTeams = ap.size() / teamSize;
 
         for (int i = 0; i < numTeams; i++) {
-            List<String> sublist = players.subList(i * teamSize, (i + 1) * teamSize);
-            ArrayList<String> team = new ArrayList<>(sublist);
+            List<Player> sublist = ap.subList(i * teamSize, (i + 1) * teamSize);
+            ArrayList<Player> team = new ArrayList<>(sublist);
             teams.add(team);
         }
 
@@ -43,15 +47,16 @@ public class TeamRandomizer {
     }
 
     public void splitPlayersInclusive(int teamSize) {
-        List<List<String>> teams = new ArrayList<>();
-        int numTeams = numPlayers / teamSize;
+        ArrayList<ArrayList<Player>> teams = new ArrayList<>();
+        ArrayList<Player> ap = randomizePlayers();
+        int numTeams = ap.size() / teamSize;
 
         for (int i = 0; i < numTeams; i++) {
             teams.add(new ArrayList<>());
         }
 
-        for (int i = 0; i < players.size(); i++) {
-            teams.get(i % numTeams).add(players.get(i));
+        for (int i = 0; i < ap.size(); i++) {
+            teams.get(i % numTeams).add(ap.get(i));
         }
 
         this.teams = teams;
@@ -59,7 +64,7 @@ public class TeamRandomizer {
         Log.d(getClass().getName(), "Teams Inclusive: " + teams);
     }
 
-    public void setPlayers(ArrayList<String> players) {
+    public void setPlayers(ArrayList<Player> players) {
         this.numPlayers = players.size();
         this.players = players;
         Log.d(getClass().getName(),"set players: " + players);
@@ -71,23 +76,51 @@ public class TeamRandomizer {
         Log.d(getClass().getName(), "cleared players");
     }
 
-    public ArrayList<String> getPlayers() {
+    public void togglePlayer(String name) {
+        for (Player p : players) {
+            String pName = p.getName();
+            if (pName.equals(name)) {
+                p.toggleActive();
+                Log.d(getClass().getName(), "Toggled " + pName);
+                return;
+            }
+        }
+    }
+
+    private ArrayList<Player> getActivePlayers() {
+        ArrayList<Player> ap = (ArrayList<Player>) players.clone();
+        for (int i = 0; i < ap.size(); i++) {
+            if (!ap.get(i).getActive()) {
+                ap.remove(i);
+            }
+        }
+
+        return ap;
+    }
+
+    public ArrayList<Player> getPlayers() {
         return players;
     }
 
-    public List<List<String>> getTeams() {
+    public ArrayList<ArrayList<Player>> getTeams() {
         return teams;
     }
 
-    public void addPlayer(String player) {
+    public void addPlayer(Player player) {
         players.add(player);
         numPlayers += 1;
         Log.d(getClass().getName(), "added " + player);
-        Log.d(getClass().getName(), "Total Players: " + String.valueOf(numPlayers));
+        Log.d(getClass().getName(), "Total Players: " + numPlayers);
     }
 
-    public void removePlayer(String player) {
-
+    public void removePlayer(String name) {
+        for (int i = 0; i < players.size(); i++) {
+            String n = players.get(i).getName();
+            if (n.equals(name)) {
+                players.remove(i);
+                return;
+            }
+        }
     }
 
     public int size() {

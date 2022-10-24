@@ -19,7 +19,7 @@ public class PlayersFragment extends Fragment implements OnItemClick {
     private Button btnAddPlayer;
     private Button btnClearPlayers;
 
-    private ArrayList<String> players;
+    private ArrayList<Player> players;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,8 @@ public class PlayersFragment extends Fragment implements OnItemClick {
         btnClearPlayers = view.findViewById(R.id.btnClearPlayers);
 
         btnAddPlayer.setOnClickListener(view -> {
-            ((MainActivity) getActivity()).getTeamRandomizer().addPlayer("Player " + (int) (Math.random() * 100));
+            String name = "Player " + (int) (Math.random() * 100);
+            ((MainActivity) getActivity()).getTeamRandomizer().addPlayer(new Player(name));
             adapter.notifyDataSetChanged();
         });
 
@@ -62,6 +63,6 @@ public class PlayersFragment extends Fragment implements OnItemClick {
 
     @Override
     public void onClick(String value) {
-        System.out.println(value);
+        ((MainActivity) getActivity()).getTeamRandomizer().togglePlayer(value);
     }
 }

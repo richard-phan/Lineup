@@ -7,6 +7,7 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -17,7 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, OnItemClick {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     private BottomNavigationView bottomNavigationView;
     private TeamsFragment teamsFragment;
     private PlayersFragment playersFragment;
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     byte[] payload = record.getPayload ();
                     byte[] textArray = Arrays.copyOfRange(payload, (int) payload[0] + 1 , payload.length);
                     String name = new String(textArray);
-                    tr.addPlayer(name);
+                    tr.addPlayer(new Player(name));
                     playersFragment.notifyDataSetChanged();
                     break;
                 case NFC_WRITE:
@@ -128,10 +129,5 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     public TeamRandomizer getTeamRandomizer() {
         return tr;
-    }
-
-    @Override
-    public void onClick(String value) {
-
     }
 }

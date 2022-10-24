@@ -37,10 +37,10 @@ public class TeamListFragment extends Fragment {
                         LinearLayout.LayoutParams.MATCH_PARENT);
         params.setMargins(0, 0, 0, 24);
 
-        ArrayList<String> players = args.getStringArrayList(TEAM_OBJECT);
-        for (String player : players) {
+        ArrayList<Player> players = (ArrayList<Player>) args.getSerializable(TEAM_OBJECT);
+        for (Player player : players) {
             TextView tvPlayer = new TextView(getContext());
-            tvPlayer.setText(player);
+            tvPlayer.setText(player.getName());
             tvPlayer.setTextSize(18);
             tvPlayer.setPadding(50, 50, 50, 50);
             tvPlayer.setBackgroundResource(R.drawable.list_item);

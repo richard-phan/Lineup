@@ -1,6 +1,5 @@
 package com.richardphan.teamrandomizer;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +8,6 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -39,7 +36,7 @@ public class TeamsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.teams_fragment, container, false);
 
-        ArrayList<String> players = ((MainActivity) getActivity()).getTeamRandomizer().getPlayers();
+        ArrayList<Player> players = ((MainActivity) getActivity()).getTeamRandomizer().getPlayers();
         teamRandomizer = new TeamRandomizer(players);
 
         tabLayout = view.findViewById(R.id.tabLayout);
@@ -89,7 +86,6 @@ public class TeamsFragment extends Fragment {
         btnInclusive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                teamRandomizer.randomize();
                 teamRandomizer.splitPlayersInclusive(sbTeamSize.getProgress());
 
                 viewPager.setAdapter(teamAdapter);
@@ -102,7 +98,6 @@ public class TeamsFragment extends Fragment {
         btnExclusive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                teamRandomizer.randomize();
                 teamRandomizer.splitPlayersExclusive(sbTeamSize.getProgress());
 
                 viewPager.setAdapter(teamAdapter);
@@ -113,13 +108,6 @@ public class TeamsFragment extends Fragment {
         });
 
         return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        new TabLayoutMediator(tabLayout, viewPager,
-//                (tab, position) -> tab.setText("TEAM " + (position + 1))
-//        ).attach();
     }
 }
 

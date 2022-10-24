@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder> {
-    private ArrayList<String> players;
+    private ArrayList<Player> players;
     private LayoutInflater inflater;
     private OnItemClick listener;
 
-    public PlayerAdapter(Context context, ArrayList<String> players, OnItemClick listener) {
+    public PlayerAdapter(Context context, ArrayList<Player> players, OnItemClick listener) {
         this.inflater = LayoutInflater.from(context);
         this.players = players;
         this.listener = listener;
@@ -33,10 +33,10 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        String player = players.get(position);
-        holder.cbActivePlayer.setChecked(true);
-        holder.textView.setText(player);
-        holder.btnDelete.setTag(player);
+        Player player = players.get(position);
+        holder.cbActivePlayer.setChecked(players.get(position).getActive());
+        holder.textView.setText(player.getName());
+        holder.btnDelete.setTag(player.getName());
 
         holder.cbActivePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +51,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
                 String name = (String) holder.btnDelete.getTag();
 
                 for (int i = 0; i < players.size(); i++) {
-                    if (players.get(i).equals(name)) {
+                    if (players.get(i).getName().equals(name)) {
                         players.remove(i);
                         notifyDataSetChanged();
                         return;
