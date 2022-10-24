@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +18,7 @@ public class PlayersFragment extends Fragment implements OnItemClick {
     private View view;
     private RecyclerView recyclerView;
     private PlayerAdapter adapter;
+    private EditText etPlayerName;
     private Button btnAddPlayer;
     private Button btnClearPlayers;
 
@@ -30,13 +33,19 @@ public class PlayersFragment extends Fragment implements OnItemClick {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.players_fragment, container, false);
 
+        etPlayerName = view.findViewById(R.id.etPlayerName);
         btnAddPlayer = view.findViewById(R.id.btnAddPlayer);
         btnClearPlayers = view.findViewById(R.id.btnClearPlayers);
 
         btnAddPlayer.setOnClickListener(view -> {
-            String name = "Player " + (int) (Math.random() * 100);
-            ((MainActivity) getActivity()).getTeamRandomizer().addPlayer(new Player(name));
-            adapter.notifyDataSetChanged();
+            String name = etPlayerName.getText().toString();
+            if (name.length() > 0) {
+                ((MainActivity) getActivity()).getTeamRandomizer().addPlayer(new Player(name));
+                etPlayerName.setText("");
+                adapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(getContext(), "Missing player name", Toast.LENGTH_SHORT).show();
+            }
         });
 
         btnClearPlayers.setOnClickListener(view -> {

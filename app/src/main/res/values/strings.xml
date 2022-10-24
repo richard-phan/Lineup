@@ -8,4 +8,5 @@
     <string name="clear">clear</string>
     <string name="tabPlayer">Players</string>
     <string name="tabTeam">Teams</string>
+    <string name="playerName">Player Name</string>
 </resources>
