@@ -41,7 +41,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
         holder.cbActivePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onClick((String) holder.textView.getText());
+                listener.onClick("TOGGLE_PLAYER", (String) holder.textView.getText());
             }
         });
 
@@ -49,14 +49,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
             @Override
             public void onClick(View view) {
                 String name = (String) holder.btnDelete.getTag();
-
-                for (int i = 0; i < players.size(); i++) {
-                    if (players.get(i).getName().equals(name)) {
-                        players.remove(i);
-                        notifyDataSetChanged();
-                        return;
-                    }
-                }
+                listener.onClick("REMOVE_PLAYER", name);
             }
         });
     }

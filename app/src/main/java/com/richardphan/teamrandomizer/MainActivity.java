@@ -7,19 +7,20 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, BadgeUpdateListener {
     private BottomNavigationView bottomNavigationView;
+    private BadgeDrawable badgeCount;
     private TeamsFragment teamsFragment;
     private PlayersFragment playersFragment;
     private TagsFragment tagsFragment;
@@ -47,12 +48,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         teamsFragment = new TeamsFragment();
-        playersFragment = new PlayersFragment();
+        playersFragment = new PlayersFragment(this);
         tagsFragment = new TagsFragment(nfcAdapter);
         settingsFragment = new SettingsFragment();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.menuPlayers);
+        badgeCount = bottomNavigationView.getOrCreateBadge(R.id.menuPlayers);
+        badgeCount.setNumber(0);
 
         pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
     }
@@ -129,5 +132,21 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     public TeamRandomizer getTeamRandomizer() {
         return tr;
+    }
+
+
+    @Override
+    public void increment() {
+        badgeCount.setNumber(badgeCount.getNumber() + 1);
+    }
+
+    @Override
+    public void decrement() {
+        badgeCount.setNumber(badgeCount.getNumber() - 1);
+    }
+
+    @Override
+    public void set(int value) {
+        badgeCount.setNumber(value);
     }
 }

@@ -89,13 +89,19 @@ public class TeamRandomizer {
 
     private ArrayList<Player> getActivePlayers() {
         ArrayList<Player> ap = (ArrayList<Player>) players.clone();
-        for (int i = 0; i < ap.size(); i++) {
+        for (int i = ap.size() - 1; i >= 0; i--) {
             if (!ap.get(i).getActive()) {
                 ap.remove(i);
             }
         }
 
+        System.out.println(ap);
+
         return ap;
+    }
+
+    public int getActivePlayerCount() {
+        return getActivePlayers().size();
     }
 
     public ArrayList<Player> getPlayers() {
