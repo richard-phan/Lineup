@@ -39,10 +39,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if (nfcAdapter == null) {
-            Toast.makeText(this, "This device does not support NFC.", Toast.LENGTH_LONG).show();
-            finish();
-        }
 
         tr = new TeamRandomizer();
 
@@ -87,7 +83,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     public void onResume() {
         super.onResume();
-        nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+        if (nfcAdapter != null) {
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+        }
     }
 
     @Override
