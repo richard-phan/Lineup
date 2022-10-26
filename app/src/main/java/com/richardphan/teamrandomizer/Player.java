@@ -3,6 +3,7 @@ package com.richardphan.teamrandomizer;
 public class Player {
     private String name;
     private boolean active;
+    private boolean captain;
 
     public Player(String name) {
         this.name = name;
@@ -16,6 +17,10 @@ public class Player {
 
     public void toggleActive() {
         this.active = !this.active;
+    }
+
+    public void toggleCaptain() {
+        this.captain = !this.captain;
     }
 
     public void setName(String name) {
@@ -32,5 +37,9 @@ public class Player {
 
     public boolean getActive() {
         return active;
+    }
+
+    public boolean getCaptain() {
+        return captain;
     }
 }

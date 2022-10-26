@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,8 +36,9 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Player player = players.get(position);
         holder.cbActivePlayer.setChecked(players.get(position).getActive());
+        holder.tbCaptain.setChecked(players.get(position).getCaptain());
         holder.textView.setText(player.getName());
-        holder.btnDelete.setTag(player.getName());
+        holder.textView.setTag(player.getName());
 
         holder.cbActivePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,10 +47,18 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
             }
         });
 
+        holder.tbCaptain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = (String) holder.textView.getTag();
+                listener.onClick("CAPTAIN_PLAYER", name);
+            }
+        });
+
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name = (String) holder.btnDelete.getTag();
+                String name = (String) holder.textView.getTag();
                 listener.onClick("REMOVE_PLAYER", name);
             }
         });
@@ -61,12 +71,14 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox cbActivePlayer;
+        ToggleButton tbCaptain;
         TextView textView;
         ImageButton btnDelete;
 
         ViewHolder(View itemView) {
             super(itemView);
             cbActivePlayer = itemView.findViewById(R.id.cbActivePlayer);
+            tbCaptain = itemView.findViewById(R.id.tbCaptain);
             textView = itemView.findViewById(R.id.tvPlayerName);
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }

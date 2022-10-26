@@ -86,7 +86,7 @@ public class TeamsFragment extends Fragment {
         btnInclusive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                teamRandomizer.splitPlayersInclusive(sbTeamSize.getProgress());
+                teamRandomizer.splitPlayers(teamRandomizer.INCLUSIVE, sbTeamSize.getProgress());
 
                 viewPager.setAdapter(teamAdapter);
                 new TabLayoutMediator(tabLayout, viewPager,
@@ -98,7 +98,7 @@ public class TeamsFragment extends Fragment {
         btnExclusive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                teamRandomizer.splitPlayersExclusive(sbTeamSize.getProgress());
+                teamRandomizer.splitPlayers(teamRandomizer.EXCLUSIVE, sbTeamSize.getProgress());
 
                 viewPager.setAdapter(teamAdapter);
                 new TabLayoutMediator(tabLayout, viewPager,

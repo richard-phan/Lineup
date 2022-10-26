@@ -96,6 +96,9 @@ public class PlayersFragment extends Fragment implements OnItemClick {
                 tr.togglePlayer(value);
                 listener.set(tr.getActivePlayerCount());
                 break;
+            case "CAPTAIN_PLAYER":
+                tr.toggleCaptain(value);
+                break;
         }
     }
 }
