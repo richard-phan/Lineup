@@ -17,9 +17,9 @@ public class TeamRandomizer {
         this.teams = new ArrayList<>();
     }
 
-    public TeamRandomizer(ArrayList<Player> players) {
+    public TeamRandomizer(ArrayList<Player> players, ArrayList<ArrayList<Player>> teams) {
         this.players = players;
-        this.teams = new ArrayList<>();
+        this.teams = teams;
     }
 
     public ArrayList<Player> randomizePlayers() {

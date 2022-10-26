@@ -23,6 +23,7 @@ public class TeamsFragment extends Fragment {
     private Button btnInclusive;
     private Button btnExclusive;
     private TabLayout tabLayout;
+    private TabLayoutMediator tabLayoutMediator;
     private ViewPager2 viewPager;
     private TeamAdapter teamAdapter;
     private TeamRandomizer teamRandomizer;
@@ -36,8 +37,7 @@ public class TeamsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.teams_fragment, container, false);
 
-        ArrayList<Player> players = ((MainActivity) getActivity()).getTeamRandomizer().getPlayers();
-        teamRandomizer = new TeamRandomizer(players);
+        teamRandomizer = ((MainActivity) getActivity()).getTeamRandomizer();
 
         tabLayout = view.findViewById(R.id.tabLayout);
         viewPager = view.findViewById(R.id.viewPager);
@@ -101,13 +101,21 @@ public class TeamsFragment extends Fragment {
                 teamRandomizer.splitPlayers(teamRandomizer.EXCLUSIVE, sbTeamSize.getProgress());
 
                 viewPager.setAdapter(teamAdapter);
-                new TabLayoutMediator(tabLayout, viewPager,
-                        (tab, position) -> tab.setText("TEAM " + (position + 1))
-                ).attach();
+                tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager,
+                        (tab, position) -> tab.setText("TEAM " + (position + 1)));
+                tabLayoutMediator.attach();
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        viewPager.setAdapter(teamAdapter);
+        tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> tab.setText("TEAM " + (position + 1)));
+        tabLayoutMediator.attach();
     }
 }
 
