@@ -12,8 +12,4 @@
         android:id="@+id/menuTags"
         android:title="Tags"
         android:icon="@drawable/ic_credit_card_black_24dp"/>
-    <item
-        android:id="@+id/menuSettings"
-        android:title="Settings"
-        android:icon="@drawable/ic_settings_black_24dp"/>
 </menu>

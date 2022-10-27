@@ -9,4 +9,6 @@
     <string name="tabPlayer">Players</string>
     <string name="tabTeam">Teams</string>
     <string name="playerName">Player Name</string>
+    <string name="scanNameRequired">Name required</string>
+    <string name="scanReady">Ready to Scan</string>
 </resources>

@@ -18,19 +18,20 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, BadgeUpdateListener {
+    public int currMenu;
     private BottomNavigationView bottomNavigationView;
     private BadgeDrawable badgeCount;
     private TeamsFragment teamsFragment;
     private PlayersFragment playersFragment;
     private TagsFragment tagsFragment;
-    private SettingsFragment settingsFragment;
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
     private int tagAction;
     private TeamRandomizer tr;
 
-    private final int NFC_READ = 0;
-    private final int NFC_WRITE = 1;
+    public final int NFC_IDLE = 0;
+    public final int NFC_READ = 1;
+    public final int NFC_WRITE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +45,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         teamsFragment = new TeamsFragment();
         playersFragment = new PlayersFragment(this);
-        tagsFragment = new TagsFragment(nfcAdapter);
-        settingsFragment = new SettingsFragment();
+        tagsFragment = new TagsFragment();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.menuPlayers);
@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        currMenu = item.getItemId();
+
         switch (item.getItemId()) {
             case R.id.menuPlayers:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, playersFragment).commit();
@@ -69,10 +71,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.menuTags:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, tagsFragment).commit();
                 tagAction = NFC_WRITE;
-                return true;
-            case R.id.menuSettings:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
-                tagAction = NFC_READ;
                 return true;
         }
 
@@ -103,10 +101,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         if (action.equals(NfcAdapter.ACTION_TAG_DISCOVERED)
                 || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-            Tag tag;
+            Tag tag = readNfc(intent);
+
             switch (tagAction) {
+                case NFC_IDLE:
+                    break;
                 case NFC_READ:
-                    tag = readNfc(intent);
                     NdefRecord record = Ndef.get(tag).getCachedNdefMessage().getRecords()[0];
                     byte[] payload = record.getPayload ();
                     byte[] textArray = Arrays.copyOfRange(payload, (int) payload[0] + 1 , payload.length);
@@ -115,8 +115,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     playersFragment.notifyDataSetChanged();
                     break;
                 case NFC_WRITE:
-                    tag = readNfc(intent);
                     tagsFragment.writeTag(tag);
+                    break;
             }
 
         }
