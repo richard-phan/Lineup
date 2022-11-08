@@ -72,6 +72,11 @@ public class TeamRandomizer {
         Log.d(getClass().getName(), "cleared players");
     }
 
+    public void setTeams(ArrayList<ArrayList<Player>> teams) {
+        this.teams = teams;
+        Log.d(getClass().getName(),"set teams: " + teams);
+    }
+
     public void togglePlayer(String name) {
         for (Player p : players) {
             String pName = p.getName();

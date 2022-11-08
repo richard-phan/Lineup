@@ -14,7 +14,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, BadgeUpdateListener {
@@ -41,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         tr = new TeamRandomizer();
+        tr.setPlayers(getPlayersJson());
+        tr.setTeams(getTeamsJson());
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         teamsFragment = new TeamsFragment();
@@ -50,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.menuPlayers);
         badgeCount = bottomNavigationView.getOrCreateBadge(R.id.menuPlayers);
-        badgeCount.setNumber(0);
+        badgeCount.setNumber(tr.getPlayers().size());
 
         pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
     }
@@ -91,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (nfcAdapter != null) {
             nfcAdapter.disableForegroundDispatch(this);
         }
+
+        saveData();
     }
 
     @Override
@@ -125,6 +139,73 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private Tag readNfc(Intent intent) {
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         return tag;
+    }
+
+    private void saveData() {
+        ArrayList<Player> players = tr.getPlayers();
+        writeSaveFile(players, "players.json");
+
+        ArrayList<ArrayList<Player>> teams = tr.getTeams();
+        writeSaveFile(teams, "teams.json");
+    }
+
+    private void writeSaveFile(Object data, String filename) {
+        File dir = getFilesDir();
+        try {
+            FileWriter fw = new FileWriter(dir + "/" + filename);
+            fw.write(new Gson().toJson(data));
+            fw.close();
+            System.out.println("Wrote data to " + filename);
+        } catch (IOException e) {
+            System.out.println("An error occurred");
+            e.printStackTrace();
+        }
+    }
+
+    private ArrayList<Player> getPlayersJson() {
+        JsonParser parser = new JsonParser();
+        ArrayList<Player> players = new ArrayList<>();
+        try {
+            JsonArray aPlayers = (JsonArray) parser.parse(new FileReader(getFilesDir() + "/players.json"));
+
+            for (Object obj : aPlayers) {
+                JsonObject oPlayer = (JsonObject) obj;
+                String name = oPlayer.get("name").getAsString();
+                boolean active = oPlayer.get("active").getAsBoolean();
+                boolean captain = oPlayer.get("captain").getAsBoolean();
+                players.add(new Player(name, active, captain));
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("players.json not found. Ignoring");
+        }
+
+        return players;
+    }
+
+    private ArrayList<ArrayList<Player>> getTeamsJson() {
+        JsonParser parser = new JsonParser();
+        ArrayList<ArrayList<Player>> teams = new ArrayList<>();
+        try {
+            JsonArray aTeams = (JsonArray) parser.parse(new FileReader(getFilesDir() + "/teams.json"));
+
+            for (Object oTeam : aTeams) {
+                ArrayList<Player> players = new ArrayList<>();
+                JsonArray aPlayers = (JsonArray) oTeam;
+                for (Object oPlayer : aPlayers) {
+                    JsonObject player = (JsonObject) oPlayer;
+                    String name = player.get("name").getAsString();
+                    boolean active = player.get("active").getAsBoolean();
+                    boolean captain = player.get("captain").getAsBoolean();
+
+                    players.add(new Player(name, active, captain));
+                }
+                teams.add(players);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("players.json not found. Ignoring");
+        }
+
+        return teams;
     }
 
     public TeamRandomizer getTeamRandomizer() {

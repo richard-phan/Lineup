@@ -1,6 +1,8 @@
 package com.richardphan.teamrandomizer;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player implements Serializable {
     private String name;
     private boolean active;
     private boolean captain;
@@ -8,11 +10,19 @@ public class Player {
     public Player(String name) {
         this.name = name;
         this.active = true;
+        this.captain = false;
     }
 
     public Player(String name, boolean active) {
         this.name = name;
         this.active = active;
+        this.captain = false;
+    }
+
+    public Player(String name, boolean active, boolean captain) {
+        this.name = name;
+        this.active = active;
+        this.captain = captain;
     }
 
     public void toggleActive() {
